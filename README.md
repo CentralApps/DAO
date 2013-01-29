@@ -17,3 +17,6 @@ Install the project
 	php composer.phar update
 	
 ## Usage
+
+This component is a set of abstract classes and interfaces, and as such they need to be used within your own code.
+
