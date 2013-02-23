@@ -73,7 +73,30 @@ class AbstractMongoDao implements DAOInterface
      */
 	public function save(ModelInterface $model)
 	{
+		if($model->existsInDatabase()) {
+            $this->update($model);
+        } else {
+            $this->insert($model);
+        }
+	}
+	
+	private function update($model)
+	{
 		
+	}
+	
+	private function insert($model)
+	{
+		$query = array();
+		foreach($model->getProperties() as $field => $value) {
+			if($field != $this->uniqueReferenceField) {
+				$query[$field] = $value;
+			}
+		}
+		$this->collection->insert($query);
+		// TODO: send id to model
+		//$model->setUniqueReferenceFieldValue($query['_id']);
+			
 	}
 	
     /**
@@ -84,7 +107,14 @@ class AbstractMongoDao implements DAOInterface
      */
 	public function delete(ModelInterface $object)
 	{
-		
+		if('MongoId' == $this->uniqueReferenceFieldType) {
+			$query = array($this->uniqueReferenceField => new \MongoId($object->getUniqueReferenceValue()));
+		} else {
+			$query = array($this->uniqueReferenceField => $object->getUniqueReferenceValue());
+		}
+		$this->collection->remove($query);
+		// TODO: return based off result?
+		return true;
 	}
 	
     /**
