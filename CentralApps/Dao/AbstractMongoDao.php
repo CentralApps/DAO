@@ -82,10 +82,26 @@ class AbstractMongoDao implements DAOInterface
 	
 	private function update($model)
 	{
-		
+		$query = $this->createArrayOfNonURFData($model);
+		if('MongoId' == $this->uniqueReferenceFieldType) {
+			$conditions = array($this->uniqueReferenceField => new \MongoId($model->getUniqueReferenceFieldValue()));
+		} else {
+			$conditions = array($this->uniqueReferenceField => $model->getUniqueReferenceFieldValue());
+		}
+		$this->collection->update($conditions, $query);
+		// TODO: return something
 	}
 	
 	private function insert($model)
+	{
+		$query = $this->createArrayOfNonURFData($model);
+		$this->collection->insert($query);
+		// TODO: send id to model
+		//$model->setUniqueReferenceFieldValue($query['_id']);
+			
+	}
+	
+	private function createArrayOfNonURFData($model)
 	{
 		$query = array();
 		foreach($model->getProperties() as $field => $value) {
@@ -93,10 +109,7 @@ class AbstractMongoDao implements DAOInterface
 				$query[$field] = $value;
 			}
 		}
-		$this->collection->insert($query);
-		// TODO: send id to model
-		//$model->setUniqueReferenceFieldValue($query['_id']);
-			
+		return $query;
 	}
 	
     /**
