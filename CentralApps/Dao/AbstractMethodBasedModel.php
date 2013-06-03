@@ -38,7 +38,6 @@ abstract class AbstractMethodBasedModel extends AbstractModel
         foreach( $array as $key => $value ) {
             $this->$key = $value;
         }
-        return $model;
     }
 
     public function setUniqueReferenceFieldValue($value)

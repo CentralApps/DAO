@@ -13,7 +13,7 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
     // if the getters and setters are not implemented, the default magic methods will use this array as a bucket
     protected $properties = array();
     
-    public function __construct($container, $unique_reference=null)
+    public function __construct($container=null, $unique_reference=null)
     {
         if(!is_array($container) && ! $container instanceof \ArrayAccess) {
             throw new \InvalidArgumentException("Container should be an array or an object which implements ArrayAccess");
