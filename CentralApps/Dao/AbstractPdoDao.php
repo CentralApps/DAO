@@ -186,7 +186,7 @@ abstract class AbstractPdoDao implements DaoInterface
                 LIMIT
                     1";
         $statement = $this->databaseEngine->prepare($sql);
-        $statement->bindParam(':' . $this->uniqueReferenceField, $unique_reference, ('int' == $this->uniqueReferenceFieldType) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        $statement->bindParam(':unique_reference', $unique_reference, ('int' == $this->uniqueReferenceFieldType) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
         $statement->execute();
         if(1 == $statement->rowCount()) {
             throw new \OutOfBoundsException("Record in table '{$this->table}' with reference of '{$unique_reference}' was not found in the database when deleting");
