@@ -166,11 +166,12 @@ abstract class AbstractPdoDao implements DaoInterface
         } 
         $statement->execute();
         if(1 != $statement->rowCount()) {
-            throw new \OutOfBoundsException("Record not found in the database");
+            // TODO: think this through, if no changes, then this is 0
+            //throw new \OutOfBoundsException("Record not found in the database");
         }
-        
+
     }
-    
+
     /**
      * Delete the model from the database
      * @param ModelInterface $model
