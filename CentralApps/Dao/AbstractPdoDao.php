@@ -173,11 +173,11 @@ abstract class AbstractPdoDao implements DaoInterface
     }
 
     /**
-     * Delete the model from the database
-     * @param ModelInterface $model
-     * @return void
-     * @throws \OutOfBoundsException
-     */
+    * Delete the model from the database
+    * @param ModelInterface $model
+    * @return void
+    * @throws \OutOfBoundsException
+    */
     public function delete(ModelInterface $object)
     {
         $sql = "DELETE FROM
@@ -187,9 +187,9 @@ abstract class AbstractPdoDao implements DaoInterface
                 LIMIT
                     1";
         $statement = $this->databaseEngine->prepare($sql);
-        $statement->bindParam(':' . $this->uniqueReferenceField, $unique_reference, ('int' == $this->uniqueReferenceFieldType) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        $statement->bindParam(':unique_reference', $object->getUniqueReferenceValue(), ('int' == $this->uniqueReferenceFieldType) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
         $statement->execute();
-        if(1 == $statement->rowCount()) {
+        if(1 !== $statement->rowCount()) {
             throw new \OutOfBoundsException("Record in table '{$this->table}' with reference of '{$unique_reference}' was not found in the database when deleting");
         }
     }
