@@ -33,6 +33,13 @@ abstract class AbstractMethodBasedModel extends AbstractModel
         }
     }
 
+    public function hydrate($array)
+    {
+        foreach( $array as $key => $value ) {
+            $this->$key = $value;
+        }
+    }
+
     public function setUniqueReferenceFieldValue($value)
     {
         $property = $this->fieldNameToProperty($this->dao->getUniqueReferenceField());

@@ -9,11 +9,11 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
     protected $daoContainerKey;
     protected $valid = false;
     protected $existsInDatabase = false;
-    
+
     // if the getters and setters are not implemented, the default magic methods will use this array as a bucket
     protected $properties = array();
-    
-    public function __construct($container, $unique_reference=null)
+
+    public function __construct($container=null, $unique_reference=null)
     {
         if(!is_array($container) && ! $container instanceof \ArrayAccess) {
             throw new \InvalidArgumentException("Container should be an array or an object which implements ArrayAccess");
@@ -36,37 +36,37 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
             throw new \RuntimeException("Container injected DAO does not implement DAOInterface");
         }
     }
-    
+
     public function setUniqueReferenceFieldValue($value)
     {
         $this->properties[$this->dao->getUniqueReferenceField()] = $value;
     }
-    
+
     public function getUniqueReferenceValue()
     {
         return $this->properties[$this->dao->getUniqueReferenceField()];
     }
-    
+
     public function setValid($valid)
     {
         $this->valid = $valid;
     }
-    
+
     public function setExistsInDatabase($exists_in_db)
     {
         $this->existsInDatabase = $exists_in_db;
     }
-    
+
     public function existsInDatabase()
     {
         return $this->existsInDatabase;
     }
-    
+
     public function isValid()
     {
         return $this->isValid;
     }
-    
+
     public function getProperties()
     {
         $properties = array();
@@ -75,20 +75,20 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
         }
         return $properties;
     }
-    
+
     public function save()
     {
         try {
             $this->dao->save($this);
             $this->setValid(true);
             $this->setExistsInDatabase(true);
+
             return true;
         } catch(\Exception $e) {
-            return false;
+            throw $e;
         }
-        
     }
-    
+
     public function delete()
     {
         try {
@@ -97,7 +97,7 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
             $this->setExistsInDatabase(false);
             return true;
         } catch(\Exception $e) {
-            return false;
+            throw $e;
         }
     }
     
@@ -112,22 +112,22 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
         */
         $property = $this->fieldNameToProperty($name);
         $this->properties[$property] = $value;
-        
+
     }
-    
+
     public function __get($name)
     {
         /**
          * Getter for if we want to get actual properties and not magic db ones
          * $name = str_replace('_', ' ', $name);
-            $name = ucwords($name);
-            $name = str_replace(' ', '', $name);
-            $getter = 'get' . $name;
-            return $this->$getter();
+         *   $name = ucwords($name);
+         *   $name = str_replace(' ', '', $name);
+         *   $getter = 'get' . $name;
+         *   return $this->$getter();
          */
-         $property = $this->fieldNameToProperty($name);
-         return $this->properties[$property];
-        
+        $property = $this->fieldNameToProperty($name);
+
+        return $this->properties[$property];
     }
 
     public function __call($name, $arguments)
@@ -147,18 +147,20 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
              * return $this->$property;
              */
             $property = $this->methodNameToProperty($name);
+
             return isset($this->properties[$property]) ? $this->properties[$property] : null;
         }
     }
-    
+
     public function hydrate($array)
     {
         foreach( $array as $key => $value ) {
             $this->properties[$key] = $value;
         }
+
         return $model;
     }
-    
+
     public function __clone()
     {
         $pkf = $this->dao->getUniqueReferenceField();
@@ -175,7 +177,8 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
     protected function fieldNameToProperty( $name )
     {
         $property = implode( ( array_map( 'ucfirst', explode( '_', $name ) ) ) );
-        return lcfirst( $property );    
+
+        return lcfirst( $property );
     }
 
     /**
@@ -196,7 +199,6 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
     protected function methodNameToProperty( $methodName )
     {
         return lcfirst( substr( $methodName, 3, strlen( $methodName ) ) );
-
     }
 
 }
