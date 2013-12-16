@@ -1,7 +1,7 @@
 <?php
 namespace CentralApps\Dao;
 
-abstract class AbstractFactory extends AbstractFactory
+abstract class AbstractFactory
 {
     protected $container;
     protected $modelClass = null;
