@@ -12,6 +12,7 @@ abstract class AbstractPdoFactory extends AbstractFactory
             if (!($model instanceof ModelInterface)) {
                 throw new \LogicException("The abstract factory only supports models which implement ModelInterface and have a hydrate method");
             }
+            $model->setExistsInDatabase(true);
             $model->hydrate($row);
             $collection->add($model);
         }
