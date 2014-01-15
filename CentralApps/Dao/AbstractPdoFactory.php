@@ -7,6 +7,7 @@ abstract class AbstractPdoFactory extends AbstractFactory
     {
         $collection = $this->getCollection();
         $statement->execute();
+
         while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $model = new $this->modelClass($this->container);
             if (!($model instanceof ModelInterface)) {
