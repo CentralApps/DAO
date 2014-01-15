@@ -6,17 +6,16 @@ A suite of abstract classes and interfaces for quickly integrating data access o
 
 Add the project to your composer.json file
 
-	{
-		"require": {
-        	"centralapps/dao": "dev-master"
-    	}
+    {
+        "require": {
+            "centralapps/dao": "dev-master"
+        }
     }
-    
+
 Install the project
 
-	php composer.phar update
-	
+    php composer.phar update
+
 ## Usage
 
 This component is a set of abstract classes and interfaces, and as such they need to be used within your own code.
-
