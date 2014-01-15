@@ -11,6 +11,19 @@ interface DAOInterface
 	public function __construct($container);
 	
 	/**
+	 * Set if the DAO should throw exceptions
+	 * @param bool $shoult_throw
+	 * @return void
+	 */
+	public function throwExceptions($should_throw);
+	
+	/**
+	 * Does the DAO throw exceptions?
+	 * @return bool
+	 */
+	public function throwsExceptions();
+	
+	/**
 	 * Create from unique reference
 	 * @param mixed $unique_reference a unique reference such as a primary key to get data for
 	 * @param object $model Optional parameter of the model to use, if null method will have to populate
