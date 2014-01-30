@@ -201,7 +201,8 @@ abstract class AbstractPdoDao implements DaoInterface
                     1";
 
         $statement = $this->databaseEngine->prepare($sql);
-        $statement->bindParam(':unique_reference', $object->getUniqueReferenceValue(), ('int' == $this->uniqueReferenceFieldType) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        $value = $object->getUniqueReferenceValue();
+        $statement->bindParam(':unique_reference', $value, ('int' == $this->uniqueReferenceFieldType) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
         $statement->execute();
 
         if (1 !== $statement->rowCount()) {
