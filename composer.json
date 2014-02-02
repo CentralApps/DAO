@@ -4,7 +4,7 @@
     "description": "A data access object framework, with PDO support out of the box",
     "keywords": ["dao","data access object", "pdo"],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.4.0"
     },
     "autoload": {
         "psr-0": { "CentralApps\\Dao": "" }
