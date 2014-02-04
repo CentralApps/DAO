@@ -37,4 +37,30 @@ abstract class AbstractPdoFactory extends AbstractFactory
 
         return $collection;
     }
+
+    protected function incorporateChildModel($primary_model, &$row, $prefix, $primary_model_setter, $child_model, $partial = true, $test_condition = 'id')
+    {
+        if (array_key_exists($prefix . $test_condition, $row)) {
+            $properties = array_keys($child_model->getProperties());
+            $hydration = array();
+
+            foreach ($properties as $property) {
+                if (array_key_exists($prefix . $property, $row)) {
+                    $hydration[$property] = $row[$prefix . $property];
+                    unset($row[$prefix . $property]);
+                }
+            }
+
+            if (true == $partial) {
+                $child_model->partiallyHydrate($hydration);
+            } else {
+                $child_model->hydrate($hydration);
+                $child_model->setExistsInDatabase(true);
+            }
+
+            $primary_model->$primary_model_setter($child_model);
+        }
+
+        return $primary_model;
+    }
 }

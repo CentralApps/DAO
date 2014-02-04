@@ -9,6 +9,7 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
     protected $daoContainerKey;
     protected $valid = false;
     protected $existsInDatabase = false;
+    protected $partiallyHydrated = false;
 
     // If the getters and setters are not implemented, the default magic methods will use this array as a bucket
     protected $properties = array();
@@ -80,6 +81,10 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
 
     public function save()
     {
+        if ($this->isPartiallyHydrated()) {
+            throw new \LogicException("This model is only partially hydrated and cannot be saved");
+        }
+
         try {
             $this->dao->save($this);
             $this->setValid(true);
@@ -93,6 +98,10 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
 
     public function delete()
     {
+        if ($this->isPartiallyHydrated()) {
+            throw new \LogicException("This model is only partially hydrated and cannot be deleted");
+        }
+
         try {
             $this->dao->delete($this);
             $this->setValid(false);
@@ -161,6 +170,17 @@ abstract class AbstractModel implements ModelInterface, MagicModelInterface
         }
 
         return $model;
+    }
+
+    public function partiallyHydrate($data)
+    {
+        $this->hydrate($data);
+        $this->partiallyHydrated = true;
+    }
+
+    public function isPartiallyHydrated()
+    {
+        return (bool) $this->partiallyHydrated;
     }
 
     public function __clone()
