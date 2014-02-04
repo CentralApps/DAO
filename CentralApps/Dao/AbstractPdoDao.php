@@ -206,7 +206,33 @@ abstract class AbstractPdoDao implements DaoInterface
         $statement->execute();
 
         if (1 !== $statement->rowCount()) {
-            throw new \OutOfBoundsException("Record in table '{$this->table}' with reference of '{$unique_reference}' was not found in the database when deleting");
+            throw new \OutOfBoundsException("Record in table '{$this->table}' with reference of '{$value}' was not found in the database when deleting");
+        }
+    }
+
+    /**
+     * Toggle a boolean value in a record
+     * @param ModelInterface $model the model to toggle a property of
+     * @param string $field_name the field to toggle
+     * @throws \OutOfBoundsException
+     */
+    public function toggleBoolean(ModelInterface $object, $field_name)
+    {
+        $sql = "UPDATE
+                    `{$this->tableName}`
+                SET
+                    `{$field_name}` = (1 - `{$field_name}`)
+                WHERE
+                    `{$this->uniqueReferenceField}`=:unique_reference
+                ";
+
+        $statement = $this->databaseEngine->prepare($sql);
+        $value = $object->getUniqueReferenceValue();
+        $statement->bindParam(':unique_reference', $value, ('int' == $this->uniqueReferenceFieldType) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        $statement->execute();
+
+        if (1 !== $statement->rowCount()) {
+            throw new \OutOfBoundsException("Record in table '{$this->table}' with reference of '{$value}' was not found in the database when toggling the " . $field_name . " field");
         }
     }
 
