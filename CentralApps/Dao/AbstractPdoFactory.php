@@ -40,7 +40,8 @@ abstract class AbstractPdoFactory extends AbstractFactory
 
     protected function incorporateChildModel($primary_model, &$row, $prefix, $primary_model_setter, $child_model, $partial = true, $test_condition = 'id')
     {
-        if (array_key_exists($prefix . $test_condition, $row)) {
+        // If the test condition (i.e. ID for a child model) exists and isn't null, then populate the child model
+        if (array_key_exists($prefix . $test_condition, $row) && !is_null($row[$prefix . $test_condition])) {
             $properties = array_keys($child_model->getProperties());
             $hydration = array();
 
