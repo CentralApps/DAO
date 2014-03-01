@@ -27,8 +27,8 @@ abstract class AbstractMethodBasedModel extends AbstractModel
     public function __call($name, $arguments)
     {
         if (strpos($name, 'set') === 0 && strlen($name) > 3) {
-             $property = $this->methodNameToProperty($name);
-             $this->$property = $arguments[0];
+            $property = $this->methodNameToProperty($name);
+            $this->$property = $arguments[0];
         } elseif (strpos($name, 'get') === 0 && strlen($name) > 3) {
             $property = $this->methodNameToProperty($name);
 
