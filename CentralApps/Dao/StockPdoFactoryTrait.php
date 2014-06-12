@@ -5,8 +5,8 @@ trait StockPdoFactoryTrait
 {
     protected $modelClass = null;
     protected $notFoundExceptionClass = '\\Exception';
-    protected $activeTrait = null;
-    protected $deletableTrait = null;
+    protected $activeTrait = '\\CentralApps\\Base\\Traits\\Active';
+    protected $deletableTrait = '\\CentralApps\\Base\\Traits\\Deletable';
     
     public function createNew()
     {
